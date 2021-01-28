@@ -45,10 +45,11 @@
                         <div class="input-group number-spinner">
                            <button id="secondMinusBtn" class="btn btn-default"><i class="fas fa-minus"></i></button>
                            <input id="secondInput" type="text" class="form-control text-center" value="1">
-                           <button id="secondtPlusBtn" class="btn btn-default plusBtn"><i class="fas fa-plus"></i></button>
+                           <button id="case-increase" class="btn btn-default plusBtn"><i
+                                 class="fas fa-plus"></i></button>
 
                         </div>
-                           <h5>$<span id="secondPrice">59</span></h5>
+                        <h5>$<span id="secondPrice">59</span></h5>
                         <img src="images/remove.png" alt="" class="remove-item">
                      </div>
                   </div>
@@ -65,7 +66,7 @@
 
                      <div class="col-md-4 status">
                         <h5>$ <span id="sub-total">1,278</span></h5>
-                        <h5>$0</h5>
+                        <h5 id="tax">$0</h5>
                         <h5>$ <span id="total">1,278</span></h5>
                      </div>
                   </div>
@@ -83,91 +84,75 @@
    <script>
       // click with increament number
       const firstPlusBtn = document.getElementById('firstPlusBtn');
-      firstPlusBtn.addEventListener('click', function(){
+      firstPlusBtn.addEventListener('click', function () {
 
          let firstInputNumber = getInputNumber('firstInput', 1);
-         const singlePrice = updatePrice('firstPrice', firstInputNumber, 1219);
-
-         const subTotal = updatePrice('sub-total', firstInputNumber, 1219);
-         updatePrice('total', firstInputNumber, 1219);
-
-         console.log(subTotal);
-         console.log('amake click marse');
+         const singlePrice = productPrice('firstPrice', firstInputNumber, 1219);
 
       })
 
       // first button decrement
       const firstMinusBtn = document.getElementById('firstMinusBtn');
-      firstMinusBtn.addEventListener('click', function(){
-
+      firstMinusBtn.addEventListener('click', function () {
          let firstInputNumber = getInputNumber('firstInput', -1);
-         updatePrice('firstPrice', firstInputNumber, -1219);
-
-         const subTotal = updatePrice('sub-total', firstInputNumber, -1219);
-         updatePrice('total', firstInputNumber, -1219);
-
+         productPrice('firstPrice', firstInputNumber, 1219);
       });
 
       // second button increament 
-      const secondtPlusBtn = document.getElementById('secondtPlusBtn');
-      secondtPlusBtn.addEventListener('click', function(){
-
+      const caseIncreaseBtn = document.getElementById('case-increase');
+      caseIncreaseBtn.addEventListener('click', function () {
          let secondInputNumber = getInputNumber('secondInput', 1);
-         const singlePrice = updatePrice('secondPrice', secondInputNumber, 59);
-
-         const subTotal = updatePrice('sub-total', secondInputNumber, 59);
-         updatePrice('total', secondInputNumber, 59);
-
-
+         const singlePrice = productPrice('secondPrice', secondInputNumber, 59);
       })
 
       // second decrement button
       const secondMinusBtn = document.getElementById('secondMinusBtn');
-      secondMinusBtn.addEventListener('click', function() {
-         
+      secondMinusBtn.addEventListener('click', function () {
          let secondInputNumber = getInputNumber('secondInput', -1);
-         updatePrice('secondPrice', secondInputNumber, -59);
-
-         const subTotal = updatePrice('sub-total', secondInputNumber, -59);
-         updatePrice('total', secondInputNumber, -59);
-
+         productPrice('secondPrice', secondInputNumber, 59);
       })
 
       // get input number
       function getInputNumber(id, action) {
 
-         let input       = document.getElementById(id).value;
+         let input = document.getElementById(id).value;
          let inputNumber = parseInt(input);
          inputNumber = inputNumber + action;
          if (inputNumber >= 1) {
-            
+
             document.getElementById(id).value = inputNumber;
             return inputNumber;
-         }else{
+         } else {
             return 1;
          }
       }
 
       // update single price 
-      function updatePrice(id, inputNumber, price) {
-         let totalPrice;
-         let currentPrice = document.getElementById(id).innerText;
-         currentPrice = currentPrice.replace(',', '');
-         const currentPriceNumber = parseFloat(currentPrice);
+      function productPrice(id, inputNumber, price) {
+         let productPrice;
+         productPrice = inputNumber * price;
+         document.getElementById(id).innerText = productPrice;
+         // show total price
+         showTotalPrice();
 
-         if (inputNumber > 1) {
-            totalPrice = currentPriceNumber + price;
-            document.getElementById(id).innerText = totalPrice;
-            
-         }else{
-            totalPrice = -1*price;
-            document.getElementById(id).innerText = totalPrice
-         }
-
-         return totalPrice;
       }
 
-      function updateTotalPrice(){
+      function showTotalPrice() {
+         const phonePrice = getSpanTextToNumber('firstPrice');
+         const casePrice = getSpanTextToNumber('secondPrice');
+         const subTtotal = phonePrice + casePrice;
+         document.getElementById('sub-total').innerText = subTtotal;
+
+         const tax = Math.round(subTtotal * 0.05);
+         document.getElementById('tax').innerText = '$' + tax;
+         const grandTotal = subTtotal + tax;
+         document.getElementById('total').innerText = grandTotal;
+      }
+
+      function getSpanTextToNumber(spanId) {
+         const spanText = document.getElementById(spanId).innerText;
+         const spanTextToNumber = parseInt(spanText);
+         return spanTextToNumber;
 
       }
 
